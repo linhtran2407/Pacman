@@ -159,9 +159,8 @@ def breadthFirstSearch(problem, initialNode):
             # if the goal node is not in the visited corner list yet
             if (currentNode.getCurrentState() not in problem.visitedCorners):
                 problem.visitedCorners.append(currentNode.getCurrentState())
-            if not problem.visitAllGoals():
                 return breadthFirstSearch(problem, currentNode)
-            else:
+            if problem.visitAllGoals():
                 return solution(currentNode)
 
         # mark the current node as explored
