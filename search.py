@@ -158,8 +158,11 @@ def breadthFirstSearch(problem, initialNode):
         if problem.isGoalState(currentNode.getCurrentState()):
             # if the goal node is not in the visited corner list yet
             if (currentNode.getCurrentState() not in problem.visitedCorners):
+                # add the goal/corner to the list
                 problem.visitedCorners.append(currentNode.getCurrentState())
+                # recrusively call the bfs, starting from the current corner to find the next corner
                 return breadthFirstSearch(problem, currentNode)
+            # if all 4 corners have been visited
             if problem.visitAllGoals():
                 return solution(currentNode)
 
