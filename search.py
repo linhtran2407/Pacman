@@ -116,7 +116,35 @@ def depthFirstSearch(problem):
     return []
 
 
-def breadthFirstSearch(problem):
+# def breadthFirstSearch(problem):
+#     """Search the shallowest nodes in the search tree first."""
+#     explored = set()  # mark visited nodes
+#     queue = util.Queue()  # frontier using the initial state of the problem
+#     initialNode = Node(problem.getStartState(), None, None, 0, 0)
+#     queue.push(initialNode)
+
+#     while not queue.isEmpty():
+#         currentNode = queue.pop()
+
+#         # if node contains goal state
+#         if problem.isGoalState(currentNode.getCurrentState()):
+#             return solution(currentNode)
+
+#         # mark the current node as explored
+#         explored.add(currentNode.getCurrentState())
+
+#         # expand the current node and explore all its children
+#         for successor in problem.getSuccessors(currentNode.getCurrentState()):
+#             successorState, successorAction = successor[0], successor[1]
+#             # if the child state was not explored, push the child node to frontier
+#             if successorState not in explored:
+#                 successorNode = Node(
+#                     successorState, currentNode, successorAction, 0, 0)
+#                 queue.push(successorNode)
+
+#     return []
+
+def breadthFirstSearch(problem, initialNode):
     """Search the shallowest nodes in the search tree first."""
     explored = set()  # mark visited nodes
     queue = util.Queue()  # frontier using the initial state of the problem
@@ -126,9 +154,15 @@ def breadthFirstSearch(problem):
     while not queue.isEmpty():
         currentNode = queue.pop()
 
-        # if node contains goal state
+        # if node is one of the corners
         if problem.isGoalState(currentNode.getCurrentState()):
-            return solution(currentNode)
+            # if the goal node is not in the visited corner list yet
+            if (currentNode.getCurrentState() not in problem.visitedCorners):
+                problem.visitedCorners.append(currentNode.getCurrentState())
+            if not problem.visitAllGoals():
+                return breadthFirstSearch(problem, currentNode)
+            else:
+                return solution(currentNode)
 
         # mark the current node as explored
         explored.add(currentNode.getCurrentState())
@@ -159,14 +193,14 @@ def uniformCostSearch(problem):
         if problem.isGoalState(currentNode.getCurrentState()):
             return solution(currentNode)
 
-        # mark the current node as explored
-        explored.add(currentNode.getCurrentState())
-
-        # expand the current node and explore all its children
-        for successor in problem.getSuccessors(currentNode.getCurrentState()):
-            successorState, successorAction = successor[0], successor[1]
-            # if the child state was not explored, push the child node to frontier
-            if successorState not in explored:
+        # expand the current node if it's not explored and explore all its children
+        if currentNode.getCurrentState() not in explored:
+            # mark the current node as explored
+            explored.add(currentNode.getCurrentState())
+            # loop through list of successors
+            for successor in problem.getSuccessors(currentNode.getCurrentState()):
+                successorState, successorAction = successor[0], successor[1]
+                # create successor node and push to frontier along with priority value
                 successorNode = Node(
                     successorState, currentNode, successorAction, 1, currentNode.getTotalPathCost()+1)
                 pq.push(successorNode, successorNode.getTotalPathCost())
@@ -198,14 +232,14 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         if problem.isGoalState(currentNode.getCurrentState()):
             return solution(currentNode)
 
-        # mark the current node as explored
-        explored.add(currentNode.getCurrentState())
-
-        # expand the current node and explore all its children
-        for successor in problem.getSuccessors(currentNode.getCurrentState()):
-            successorState, successorAction = successor[0], successor[1]
-            # if the child state was not explored, push the child node to frontier
-            if successorState not in explored:
+        # expand the current node if it's not explored and explore all its children
+        if currentNode.getCurrentState() not in explored:
+            # mark the current node as explored
+            explored.add(currentNode.getCurrentState())
+            # loop through list of successors
+            for successor in problem.getSuccessors(currentNode.getCurrentState()):
+                successorState, successorAction = successor[0], successor[1]
+                # create successor node and push to frontier along with priority value
                 successorNode = Node(
                     successorState, currentNode, successorAction, 1, currentNode.getTotalPathCost()+1)
                 pq.push(successorNode, successorNode.getTotalPathCost() +
